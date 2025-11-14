@@ -1,0 +1,46 @@
+import random
+import numpy as np
+
+MAXIMOTABLERO = 19
+
+def colocarBarco(barco, posiciones):
+    
+    #posiciones es una lista que contiene tuplas de tuplas
+    #ejemplo:
+    #lista[0] = ((0,1),(1,0))
+
+    colocado = False
+    while not colocado:
+        fila_correcta = False
+        while not fila_correcta:
+            #fila de inicio y de fin del barco, el fin será siempre la fila de inicio más el tamaño del barco menos 1 porque inicial está incluida
+            fila_inicio = random.randint(0, MAXIMOTABLERO)
+            fila_fin = fila_inicio + barco - 1
+            if fila_fin <= MAXIMOTABLERO:
+                fila_correcta = True
+        
+        columna_inicio = random.randint(0, MAXIMOTABLERO)
+        columna_fin = columna_inicio  #como todos los barcos van en vertical, la columna inicial y la final son iguales.
+        
+        inicio = (fila_inicio, columna_inicio)
+        fin = (fila_fin, columna_fin)
+        posicion_barco = (inicio, fin)
+        
+        hay_colision = False
+        
+        for (inicio_existente, fin_existente) in posiciones:
+            fila_ini_ex, col_ini_ex = inicio_existente
+            fila_fin_ex, col_fin_ex = fin_existente
+            
+            # Revisamos si estan en la misma columna
+            if col_ini_ex == columna_inicio:
+                # Comprobamos la colision en los intervalos verticales
+                if not (fila_fin < fila_ini_ex or fila_fin_ex < fila_inicio):
+                    hay_colision = True
+        
+        # Si despues del bucle ya no hay ninguna colision con otro barco, colocamos el barco
+        if not hay_colision:
+            posiciones.append(posicion_barco)
+            colocado = True
+            
+    return posiciones
